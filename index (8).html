@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CCaaS Competitor &rarr; NCC Field Mapping</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #F6F7F9;
+    --panel: #FFFFFF;
+    --ink: #16212E;
+    --ink-soft: #4B5563;
+    --line: #DFE3E8;
+    --line-soft: #ECEEF1;
+    --accent: #2F5AA8;
+    --accent-dark: #1E3C70;
+    --ncc-tint: #EAF4EC;
+    --ncc-border: #BFE0C6;
+    --green: #2E7D4F;
+    --green-bg: #E6F3EA;
+    --amber: #9C6B10;
+    --amber-bg: #FBF0D9;
+    --mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    --sans: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a { color: var(--accent); }
+  a:hover { color: var(--accent-dark); }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .site-header {
+    background: var(--accent-dark);
+    color: #fff;
+    padding: 28px clamp(16px, 4vw, 48px) 0;
+  }
+
+  .site-header h1 {
+    margin: 0 0 4px;
+    font-size: clamp(22px, 2.6vw, 30px);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  .site-header .sub {
+    margin: 0 0 22px;
+    color: #C7D4E8;
+    font-size: 14.5px;
+    max-width: 62ch;
+    line-height: 1.5;
+  }
+
+  nav.tabs {
+    display: flex;
+    gap: 4px;
+    overflow-x: auto;
+    scrollbar-width: thin;
+    border-bottom: 1px solid rgba(255,255,255,0.14);
+  }
+
+  nav.tabs button {
+    appearance: none;
+    background: transparent;
+    border: none;
+    color: #AEC0DC;
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 500;
+    padding: 10px 16px 12px;
+    cursor: pointer;
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    transition: color .15s ease, border-color .15s ease;
+  }
+
+  nav.tabs button:hover { color: #fff; }
+
+  nav.tabs button.is-active {
+    color: #fff;
+    border-bottom-color: #6FA0E8;
+  }
+
+  main {
+    padding: 28px clamp(16px, 4vw, 48px) 60px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .tab-panel { display: none; }
+  .tab-panel.is-active { display: block; }
+
+  .panel-head h2 {
+    margin: 0 0 4px;
+    font-size: 19px;
+    font-weight: 600;
+  }
+
+  .tab-note {
+    margin: 0 0 16px;
+    color: var(--ink-soft);
+    font-size: 14px;
+    max-width: 70ch;
+  }
+
+  .search-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+
+  .search-box {
+    font-family: var(--sans);
+    font-size: 14px;
+    padding: 9px 12px;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    background: var(--panel);
+    color: var(--ink);
+    width: min(360px, 100%);
+  }
+
+  .search-box:focus { border-color: var(--accent); }
+
+  .row-count {
+    font-size: 12.5px;
+    color: var(--ink-soft);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .table-scroll {
+    overflow: auto;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: var(--panel);
+    max-height: 72vh;
+  }
+
+  table {
+    border-collapse: separate;
+    border-spacing: 0;
+    width: 100%;
+    font-size: 13.5px;
+    line-height: 1.45;
+  }
+
+  thead th {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: var(--accent-dark);
+    color: #fff;
+    text-align: left;
+    font-weight: 600;
+    font-size: 12.5px;
+    letter-spacing: 0.01em;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--accent-dark);
+    white-space: nowrap;
+  }
+
+  tbody td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--line-soft);
+    vertical-align: top;
+    color: var(--ink);
+  }
+
+  tbody tr:nth-child(even) td { background: #FBFCFD; }
+  tbody tr:nth-child(even) td.ncc-col { background: #E3F0E6; }
+  tbody tr:hover td { background: #F1F5FB; }
+  tbody tr:hover td.ncc-col { background: #DCEEE1; }
+
+  td.sticky-col, th:first-child {
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    font-weight: 500;
+  }
+
+  thead th:first-child { z-index: 3; }
+
+  td.sticky-col { background: var(--panel); }
+  tbody tr:nth-child(even) td.sticky-col { background: #FBFCFD; }
+  tbody tr:hover td.sticky-col { background: #F1F5FB; }
+
+  td.ncc-col {
+    background: var(--ncc-tint);
+    font-family: var(--mono);
+    font-size: 12.5px;
+    border-left: 2px solid var(--ncc-border);
+    border-right: 2px solid var(--ncc-border);
+  }
+
+  .dash { color: #B6BCC4; }
+
+  .unverified {
+    color: #9A7B1F;
+    font-style: italic;
+  }
+
+  .conf {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12.5px;
+    white-space: nowrap;
+  }
+
+  .conf i {
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+  }
+
+  .conf-verified { color: var(--green); }
+  .conf-verified i { background: var(--green); }
+  .conf-partial { color: var(--amber); }
+  .conf-partial i { background: var(--amber); }
+
+  /* Overview tab */
+  .overview-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 2.2fr) minmax(220px, 1fr);
+    gap: 40px;
+    align-items: start;
+  }
+
+  .overview-main h2 {
+    font-size: 20px;
+    margin: 0 0 10px;
+  }
+  .overview-main h3 {
+    font-size: 15px;
+    margin: 26px 0 8px;
+    color: var(--accent-dark);
+  }
+  .overview-main p {
+    max-width: 72ch;
+    line-height: 1.6;
+    color: var(--ink);
+    font-size: 15px;
+  }
+  .overview-main ul {
+    max-width: 72ch;
+    line-height: 1.6;
+    font-size: 14.5px;
+    padding-left: 20px;
+  }
+  .overview-main li { margin-bottom: 6px; }
+
+  .legend-list li { list-style: none; margin-bottom: 10px; margin-left: -20px; }
+  .swatch {
+    display: inline-block;
+    width: 13px; height: 13px;
+    border-radius: 2px;
+    margin-right: 8px;
+    vertical-align: -1px;
+  }
+  .swatch-ncc { background: var(--ncc-tint); border: 1px solid var(--ncc-border); }
+
+  .overview-side {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .side-card {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 16px 18px;
+  }
+
+  .side-label {
+    display: block;
+    font-size: 11.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--ink-soft);
+    margin-bottom: 4px;
+  }
+
+  .side-value {
+    display: block;
+    font-size: 15px;
+    font-weight: 600;
+    font-family: var(--mono);
+  }
+
+  .side-tabs {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    font-size: 14px;
+  }
+  .side-tabs li {
+    padding: 6px 0;
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .side-tabs li:last-child { border-bottom: none; }
+
+  .src-url a { word-break: break-all; font-family: var(--mono); font-size: 12.5px; }
+
+  .site-footer {
+    padding: 20px clamp(16px, 4vw, 48px) 36px;
+    color: var(--ink-soft);
+    font-size: 12.5px;
+    max-width: 1400px;
+    margin: 0 auto;
+    border-top: 1px solid var(--line);
+  }
+
+  mark {
+    background: #FFE89A;
+    color: inherit;
+    border-radius: 2px;
+    padding: 0 1px;
+  }
+
+  @media (max-width: 860px) {
+    .overview-grid { grid-template-columns: 1fr; }
+    td.sticky-col, th:first-child { position: static; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <h1>CCaaS Competitor &rarr; NCC Field Mapping</h1>
+  <p class="sub">Five9, Genesys Cloud, NICE CXone, RingCX, Zoom Contact Center, Talkdesk, Avaya and Sinch settings, mapped to their closest Nextiva Contact Center (NCC) object and field.</p>
+  <nav class="tabs" role="tablist" aria-label="Sections">
+    <button id="tab-Overview" class="is-active" role="tab" aria-selected="true" aria-controls="panel-Overview" data-tab="Overview">Overview</button>
+    <button id="tab-Inbound-ACD" role="tab" aria-selected="false" aria-controls="panel-Inbound-ACD" data-tab="Inbound-ACD">Inbound / ACD</button>
+    <button id="tab-Outbound-Dialer" role="tab" aria-selected="false" aria-controls="panel-Outbound-Dialer" data-tab="Outbound-Dialer">Outbound Dialer</button>
+    <button id="tab-Other-Vendors" role="tab" aria-selected="false" aria-controls="panel-Other-Vendors" data-tab="Other-Vendors">Other Vendors</button>
+    <button id="tab-NCC-Field-Reference" role="tab" aria-selected="false" aria-controls="panel-NCC-Field-Reference" data-tab="NCC-Field-Reference">NCC Field Reference</button>
+    <button id="tab-Sources" role="tab" aria-selected="false" aria-controls="panel-Sources" data-tab="Sources">Sources</button>
+  </nav>
+</header>
+
+<main>
+
+<section class="tab-panel is-active" id="panel-Overview" role="tabpanel" aria-labelledby="tab-Overview">
+  <div class="overview-grid">
+    <div class="overview-main">
+      <h2>What this is</h2>
+      <p>A field-by-field reference mapping common CCaaS/ACD and outbound dialer settings in <strong>competitor platforms</strong> to their closest equivalent in <strong>Nextiva Contact Center (NCC)</strong>. Built for discovery calls, demo prep, and migration scoping &mdash; so a setting a prospect describes on a Five9 or Genesys call can be translated to the right NCC object and field without digging through the admin console live.</p>
+
+      <h3>How to use it</h3>
+      <ul class="howto-list">
+        <li>Jump to <strong>Inbound / ACD</strong> or <strong>Outbound Dialer</strong> for the capability-by-capability vendor comparison.</li>
+        <li>Use <strong>Other Vendors</strong> for one-off lookups against Avaya, Sinch, and Talkdesk.</li>
+        <li>Use <strong>NCC Field Reference</strong> as a standalone glossary of every NCC object, tab, and field named above.</li>
+        <li>Each table has its own filter box &mdash; search any term (a vendor name, a field, a capability) to narrow the rows instantly.</li>
+      </ul>
+
+      <h3>Legend</h3>
+      <ul class="legend-list">
+        <li><span class="swatch swatch-ncc"></span> Green-tinted column = the NCC equivalent.</li>
+        <li><span class="conf conf-verified"><i></i>Verified in docs</span> &mdash; confirmed directly in vendor documentation.</li>
+        <li><span class="conf conf-partial"><i></i>Partly verified</span> &mdash; partially confirmed, or unverified; <strong>confirm in the vendor admin UI before using in a customer-facing document.</strong></li>
+        <li><span class="unverified">(unverified)</span> inside a cell &mdash; from general product knowledge, not confirmed in retrieved documentation.</li>
+        <li><span class="dash">&ndash;</span> &mdash; no equivalent found.</li>
+      </ul>
+
+      <h3>Known gaps</h3>
+      <ul class="gaps-list">
+        <li>Five9&rsquo;s docs portal is JavaScript-rendered; field names come from the Five9 admin API/PowerShell wrapper and the Campaign Administrator&rsquo;s Guide table of contents.</li>
+        <li>RingCX: only the object/procedure list was retrievable, not field-level detail.</li>
+        <li>Genesys Cloud, NICE CXone and Zoom: field names from public help pages and the Zoom REST API; some UI labels differ by release.</li>
+        <li>NCC &ldquo;workitem&rdquo; = interaction (Genesys), contact (NICE), engagement (Zoom).</li>
+      </ul>
+    </div>
+    <aside class="overview-side">
+      <div class="side-card">
+        <span class="side-label">Prepared</span>
+        <span class="side-value">2026-10-08</span>
+      </div>
+      <div class="side-card">
+        <span class="side-label">Tabs</span>
+        <ul class="side-tabs">
+          <li>Inbound &amp; ACD</li>
+          <li>Outbound Dialer</li>
+          <li>Other Vendors</li>
+          <li>NCC Field Reference</li>
+          <li>Sources</li>
+        </ul>
+      </div>
+    </aside>
+  </div>
+</section>
+
+    <section class="tab-panel" id="panel-Inbound-ACD" role="tabpanel" aria-labelledby="tab-Inbound-ACD">
+      <div class="panel-head">
+        <h2>Inbound / ACD</h2>
+        <p class="tab-note">Queue, routing, skills, wrap-up, dispositions, capacity, hours.</p>
+        <div class="search-row">
+          <input type="search" class="search-box" placeholder="Filter Inbound / ACD&hellip;" data-target="table-Inbound-ACD" aria-label="Filter Inbound / ACD table">
+          <span class="row-count" id="count-Inbound-ACD"></span>
+        </div>
+      </div>
+      <div class="table-scroll">
+        <table id="table-Inbound-ACD">
+          <thead><tr><th>Capability</th><th>NCC (object &gt; field)</th><th>Five9</th><th>Genesys Cloud</th><th>NICE CXone</th><th>RingCX</th><th>Zoom Contact Center</th><th>Confidence</th><th>Notes</th></tr></thead>
+          <tbody><tr><td class="sticky-col">Queue object</td><td class="ncc-col">Queue &gt; Name, Description</td><td>Skill / inbound campaign <span class="unverified">(unverified)</span></td><td>Queue</td><td>ACD Skill</td><td>Inbound queue</td><td>Queue (channel-specific group)</td><td class="conf-col"><span class="conf conf-verified"><i></i>Verified in docs</span></td><td></td></tr><tr><td class="sticky-col">Agent distribution</td><td class="ncc-col">Queue &gt; Agent Assignment: FIFO or LIFO x Across All Queues / By Status / Per Queue</td><td>Longest wait, round robin, min calls handled</td><td>Routing method (standard ACD, bullseye, predictive) + skill evaluation method</td><td>Skill proficiency + Studio script routing <span class="unverified">(unverified)</span></td><td><span class="dash">&ndash;</span></td><td>Agent Routing Profile, Consumer Routing Profile</td><td class="conf-col"><span class="conf conf-partial"><i></i>Partly verified</span></td><td>By-Status assignment type supersedes others when a workitem hits multiple queues.</td></tr><tr><td class="sticky-col">Max wait / queue timeout</td><td class="ncc-col">No queue-level field; handled in Workflow <span class="unverified">(unverified)</span></td><td>maxQueueTime (min/sec) + queueExpirationAction (e.g. start IVR script)</td><td>Architect flow <span class="unverified">(unverified)</span></td><td>Studio script <span class="unverified">(unverified)</span></td><td><span class="dash">&ndash;</span></td><td>max_wait_time (seconds)</td><td class="conf-col"><span class="conf conf-partial"><i></i>Partly verified</span></td><td>Different object in NCC vs Five9/Zoom.</td></tr><tr><td class="sticky-col">Queue capacity</td><td class="ncc-col">Queue &gt; Agent to Call Ratio</td><td><span class="dash">&ndash;</span></td><td><span class="dash">&ndash;</span></td><td><span class="dash">&ndash;</span></td><td><span class="dash">&ndash;</span></td><td>max_engagement_in_queue (max 3000)</td><td class="conf-col"><span class="conf conf-verified"><i></i>Verified in docs</span></td><td></td></tr><tr><td class="sticky-col">Overflow</td><td class="ncc-col">Workflow Exit Queue action (required to overflow from a blended queue)</td><td>Queue expiration action</td><td>Flow transfer <span class="unverified">(unverified)</span></td><td>Studio <span class="unverified">(unverified)</span></td><td><span class="dash">&ndash;</span></td><td>overflow_to_cc_queue_id</td><td class="conf-col"><span class="conf conf-partial"><i></i>Partly verified</span></td><td></td></tr><tr><td class="sticky-col">Skills</td><td class="ncc-col">Skills &gt; Name, Description, Users; first-party and third-party skills</td><td>Skills with agent skill level <span class="unverified">(unverified)</span></td><td>ACD skills assigned to agents</td><td>Skills tied to one Hours of Operation profile</td><td>Digital queue group skills</td><td>Skills, including proficiency-based</td><td class="conf-col"><span class="conf conf-verified"><i></i>Verified in docs</span></td><td>NCC first/third-party skills are dialer lead-matching, not only inbound routing.</td></tr><tr><td class="sticky-col">Service level</td><td class="ncc-col">Queue &gt; SLA: threshold seconds per channel (voice, chat, email, social, SMS); SLA 1/2/3 formulas</td><td><span class="dash">&ndash;</span></td><td>Queue service level target <span class="unverified">(unverified)</span></td><td>Service level threshold on skill</td><td><span class="dash">&ndash;</span></td><td>service_level_target_in_percentage + exclude short/long abandoned</td><td class="conf-col"><span class="conf conf-partial"><i></i>Partly verified</span></td><td>NCC SLA 1 counts drops inside threshold as met; SLA 2 and 3 do not.</td></tr><tr><td class="sticky-col">Wrap-up / ACW</td><td class="ncc-col">User Profile &gt; Auto Disposition: Auto disposition, Wait time before auto disposition, Disable Disposition, Confirm disposition; Campaign &gt; Campaign Auto Disposition</td><td>After Call Work Time Limit (campaign)</td><td>Queue ACW setting: mandatory / optional / timeout <span class="unverified">(unverified)</span></td><td>Skill &gt; Post Contact: Automatic Wrap-up / Disposition / None; State, Max Time Limit, Timeout State, Required</td><td><span class="dash">&ndash;</span></td><td>Wrap-Up Duration, Wrap-Up Auto Close</td><td class="conf-col"><span class="conf conf-partial"><i></i>Partly verified</span></td><td>NICE and NCC both support auto-finalize after a timer.</td></tr><tr><td class="sticky-col">Dispositions</td><td class="ncc-col">Campaign &gt; Dispositions; User Profile &gt; Dispositions (subset shown to agent)</td><td>Dispositions per campaign</td><td>Wrap-up codes associated to queue</td><td>Disposition name + classification, assigned per skill</td><td>Agent dispositions per inbound queue / outbound campaign</td><td>Queue Dispositions, Recommended Dispositions</td><td class="conf-col"><span class="conf conf-verified"><i></i>Verified in docs</span></td><td>NCC: if campaign and profile lists do not intersect, full list shows; if nothing displays, agent is stuck.</td></tr><tr><td class="sticky-col">Business hours</td><td class="ncc-col">Queue &gt; Email Working Hours (via Business Event); Time Events</td><td>Hours logic in IVR script <span class="unverified">(unverified)</span></td><td>Schedules / schedule groups <span class="unverified">(unverified)</span></td><td>Hours of Operation profile + Studio Hours action</td><td><span class="dash">&ndash;</span></td><td>Queue Availability</td><td class="conf-col"><span class="conf conf-partial"><i></i>Partly verified</span></td><td></td></tr><tr><td class="sticky-col">Channel capacity</td><td class="ncc-col">User Profile &gt; Channels: Enable, Priority, Simultaneous Limit, Support Multi-tasking</td><td>Agent profile max chats/emails <span class="unverified">(unverified)</span></td><td>Max interactions per agent, utilization</td><td>Agent concurrency <span class="unverified">(unverified)</span></td><td><span class="dash">&ndash;</span></td><td>Agent concurrency <span class="unverified">(unverified)</span></td><td class="conf-col"><span class="conf conf-partial"><i></i>Partly verified</span></td><td></td></tr><tr><td class="sticky-col">Offer timeout</td><td class="ncc-col">User Profile &gt; ACD &gt; Offer Timeout in Seconds</td><td><span class="dash">&ndash;</span></td><td>Alerting timeout (queue alert timeout)</td><td><span class="dash">&ndash;</span></td><td><span class="dash">&ndash;</span></td><td><span class="dash">&ndash;</span></td><td class="conf-col"><span class="conf conf-partial"><i></i>Partly verified</span></td><td>Missed offer returns to queue and sets No Answer in NCC.</td></tr><tr><td class="sticky-col">Agent status</td><td class="ncc-col">User Status / Creating a status</td><td>Not Ready reason codes <span class="unverified">(unverified)</span></td><td>Presence <span class="unverified">(unverified)</span></td><td>Unavailable Codes (After Contact Work flag; Agent Timeout default 120 min)</td><td><span class="dash">&ndash;</span></td><td><span class="dash">&ndash;</span></td><td class="conf-col"><span class="conf conf-partial"><i></i>Partly verified</span></td><td>NCC Teams Presence Sync requires status names to match Teams.</td></tr><tr><td class="sticky-col">Call flow</td><td class="ncc-col">Campaign &gt; Workflow</td><td>IVR script</td><td>Architect flow <span class="unverified">(unverified)</span></td><td>Studio script</td><td>IVR</td><td>Flows <span class="unverified">(unverified)</span></td><td class="conf-col"><span class="conf conf-partial"><i></i>Partly verified</span></td><td></td></tr><tr><td class="sticky-col">Realtime queue data to flow</td><td class="ncc-col">Queue &gt; Real Time: Enable Realtime Data, Enable Realtime Changes</td><td><span class="dash">&ndash;</span></td><td><span class="dash">&ndash;</span></td><td><span class="dash">&ndash;</span></td><td><span class="dash">&ndash;</span></td><td><span class="dash">&ndash;</span></td><td class="conf-col"><span class="conf conf-verified"><i></i>Verified in docs</span></td><td>Used for EWT / position in queue announcements.</td></tr><tr><td class="sticky-col">Queue announcement to agent</td><td class="ncc-col">Queue &gt; Play Announcement &gt; Prompt</td><td><span class="dash">&ndash;</span></td><td><span class="dash">&ndash;</span></td><td><span class="dash">&ndash;</span></td><td><span class="dash">&ndash;</span></td><td><span class="dash">&ndash;</span></td><td class="conf-col"><span class="conf conf-verified"><i></i>Verified in docs</span></td><td></td></tr><tr><td class="sticky-col">Supervisor assignment</td><td class="ncc-col">Queue &gt; Supervisors; Campaign &gt; Supervisors</td><td><span class="dash">&ndash;</span></td><td><span class="dash">&ndash;</span></td><td><span class="dash">&ndash;</span></td><td><span class="dash">&ndash;</span></td><td><span class="dash">&ndash;</span></td><td class="conf-col"><span class="conf conf-verified"><i></i>Verified in docs</span></td><td></td></tr></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="tab-panel" id="panel-Outbound-Dialer" role="tabpanel" aria-labelledby="tab-Outbound-Dialer">
+      <div class="panel-head">
+        <h2>Outbound Dialer</h2>
+        <p class="tab-note">Dialing mode, pacing, abandon, AMD, retries, caller ID, consent.</p>
+        <div class="search-row">
+          <input type="search" class="search-box" placeholder="Filter Outbound Dialer&hellip;" data-target="table-Outbound-Dialer" aria-label="Filter Outbound Dialer table">
+          <span class="row-count" id="count-Outbound-Dialer"></span>
+        </div>
+      </div>
+      <div class="table-scroll">
+        <table id="table-Outbound-Dialer">
+          <thead><tr><th>Capability</th><th>NCC (Campaign &gt; tab &gt; field)</th><th>Five9</th><th>Genesys Cloud</th><th>NICE CXone</th><th>RingCX</th><th>Zoom Contact Center</th><th>Confidence</th><th>Notes</th></tr></thead>
+          <tbody><tr><td class="sticky-col">Dialing mode</td><td class="ncc-col">Campaign &gt; Options &gt; Use for Progressive Dialing; Dialer Configuration &gt; Enable Quarterback Mode (none / agent / application)</td><td>dialingMode: PREDICTIVE, PROGRESSIVE, PREVIEW, POWER</td><td>Agentless, Power, Predictive, Preview, Progressive</td><td>Not retrieved</td><td>Dial group dial mode</td><td><span class="dash">&ndash;</span></td><td class="conf-col"><span class="conf conf-verified"><i></i>Verified in docs</span></td><td>Talkdesk: dialer modes <span class="unverified">(unverified)</span></td></tr><tr><td class="sticky-col">Dial ratio</td><td class="ncc-col">Campaign &gt; Dialer Configuration &gt; Max Dial Ratio</td><td>callsAgentRatio (1 to 10)</td><td>Pacing driven by abandon target <span class="unverified">(unverified)</span></td><td>Not retrieved</td><td>Predictive dialing ratios and settings</td><td><span class="dash">&ndash;</span></td><td class="conf-col"><span class="conf conf-verified"><i></i>Verified in docs</span></td><td>Talkdesk: Max. dialing ratio</td></tr><tr><td class="sticky-col">Abandon limit</td><td class="ncc-col">Campaign &gt; Dialer Configuration &gt; Abandon Percentage</td><td>Max abandon rate in campaign profile <span class="unverified">(unverified)</span></td><td>Abandon Rate</td><td>Not retrieved</td><td><span class="dash">&ndash;</span></td><td><span class="dash">&ndash;</span></td><td class="conf-col"><span class="conf conf-partial"><i></i>Partly verified</span></td><td>Talkdesk: Max. abandonment rate, Abandonment timeout</td></tr><tr><td class="sticky-col">No-answer / ring time</td><td class="ncc-col">Campaign &gt; Dialer Configuration &gt; No Answer Timeout</td><td>Max ring time in profile <span class="unverified">(unverified)</span></td><td>Default 30s unless configured</td><td>Not retrieved</td><td><span class="dash">&ndash;</span></td><td><span class="dash">&ndash;</span></td><td class="conf-col"><span class="conf conf-partial"><i></i>Partly verified</span></td><td>Talkdesk: Max. ring time</td></tr><tr><td class="sticky-col">Cool-off between calls</td><td class="ncc-col">Campaign &gt; Dialer Configuration &gt; Cooling Off Period For Dialer Users (secs)</td><td><span class="dash">&ndash;</span></td><td><span class="dash">&ndash;</span></td><td><span class="dash">&ndash;</span></td><td><span class="dash">&ndash;</span></td><td><span class="dash">&ndash;</span></td><td class="conf-col"><span class="conf conf-verified"><i></i>Verified in docs</span></td><td></td></tr><tr><td class="sticky-col">Agents reserved for inbound</td><td class="ncc-col">Campaign &gt; Dialer Configuration &gt; Agents Available for Inbound; Queue &gt; Blended Queue</td><td><span class="dash">&ndash;</span></td><td><span class="dash">&ndash;</span></td><td><span class="dash">&ndash;</span></td><td><span class="dash">&ndash;</span></td><td><span class="dash">&ndash;</span></td><td class="conf-col"><span class="conf conf-verified"><i></i>Verified in docs</span></td><td>Blended queues must be used 1:1 with the predictive campaign.</td></tr><tr><td class="sticky-col">Answering machine detection</td><td class="ncc-col">Campaign &gt; AMD: AMD Timeout, Machine Detection End Speech Threshold, Speech Threshold, Initial Silence Timeout, AMD Unknown as Answering Machine; Human tab: Human Action / Function / Disposition</td><td>Call analysis; answer-machine action (e.g. start IVR script); fax and call-screening detection</td><td>Call Response (call analysis response set)</td><td>Not retrieved</td><td>Voicemail detection profile</td><td><span class="dash">&ndash;</span></td><td class="conf-col"><span class="conf conf-verified"><i></i>Verified in docs</span></td><td>NCC AMD timers are exposed in ms; competitors mostly expose profiles.</td></tr><tr><td class="sticky-col">Retries / attempts</td><td class="ncc-col">Campaign &gt; Lead Attempts: Max Attempts per Address, Daily Max Attempts, Max Attempts, Delay For</td><td>Duration before redial; extended dialing strategy</td><td>Rule sets (wrap-up code mapping to uncallable)</td><td>Not retrieved</td><td>Campaign passes</td><td><span class="dash">&ndash;</span></td><td class="conf-col"><span class="conf conf-verified"><i></i>Verified in docs</span></td><td>Talkdesk: Global max attempts, default retry period, max busy attempts</td></tr><tr><td class="sticky-col">Lead priority / filtering</td><td class="ncc-col">Campaign &gt; Lead Filters: Filter, Field used to Prioritize Leads, Filter Leads by Number of Days, Partition Count Field; Lead Options: Percentage of New Leads / Agent Callbacks / Third Party Callbacks</td><td>List dialing order, state dialing rules</td><td>Contact list + contact list numbers</td><td>Not retrieved</td><td>Criteria-based dial plans</td><td><span class="dash">&ndash;</span></td><td class="conf-col"><span class="conf conf-partial"><i></i>Partly verified</span></td><td>Talkdesk: Dialing order, ring-group filters</td></tr><tr><td class="sticky-col">Primary phone field</td><td class="ncc-col">Campaign &gt; Lead Options &gt; Primary Phone Field; Time Between Alternate Phone Numbers</td><td><span class="dash">&ndash;</span></td><td>Contact List Numbers (phone columns dialed)</td><td>Not retrieved</td><td><span class="dash">&ndash;</span></td><td><span class="dash">&ndash;</span></td><td class="conf-col"><span class="conf conf-partial"><i></i>Partly verified</span></td><td></td></tr><tr><td class="sticky-col">Field mapping</td><td class="ncc-col">Campaign &gt; Dialer Configuration &gt; Field Mappings</td><td><span class="dash">&ndash;</span></td><td>Contact list columns</td><td><span class="dash">&ndash;</span></td><td>Lead list mapping template</td><td><span class="dash">&ndash;</span></td><td class="conf-col"><span class="conf conf-partial"><i></i>Partly verified</span></td><td></td></tr><tr><td class="sticky-col">Callable hours</td><td class="ncc-col">Outbound Hours object</td><td>State dialing rules</td><td>Contactable Time Set</td><td>Not retrieved</td><td>Daily campaign schedules</td><td><span class="dash">&ndash;</span></td><td class="conf-col"><span class="conf conf-partial"><i></i>Partly verified</span></td><td></td></tr><tr><td class="sticky-col">Caller ID</td><td class="ncc-col">Campaign &gt; Campaign Call ID: Number, State DID, Outbound ANI, Disable Dialing Leads With Campaign Call ID</td><td>useDnisAsAni</td><td>Caller ID Name, Caller ID Phone Number</td><td>Skill caller ID</td><td>Caller IDs</td><td><span class="dash">&ndash;</span></td><td class="conf-col"><span class="conf conf-verified"><i></i>Verified in docs</span></td><td></td></tr><tr><td class="sticky-col">Preview dialing</td><td class="ncc-col">User Profile &gt; Auto Dial &gt; Auto Dial in Review; Campaign &gt; Auto Dial Timer (1-600 s)</td><td>Preview mode: unlimited / limited / none; max preview time and action</td><td>Allow Skipping of Preview Calls</td><td><span class="dash">&ndash;</span></td><td><span class="dash">&ndash;</span></td><td><span class="dash">&ndash;</span></td><td class="conf-col"><span class="conf conf-verified"><i></i>Verified in docs</span></td><td></td></tr><tr><td class="sticky-col">Lead-to-skill matching</td><td class="ncc-col">Campaign &gt; First Party Skills / Third Party Skills: Field used, Minimum Available users, Only Load Leads for Available Third Party Users</td><td><span class="dash">&ndash;</span></td><td><span class="dash">&ndash;</span></td><td><span class="dash">&ndash;</span></td><td><span class="dash">&ndash;</span></td><td><span class="dash">&ndash;</span></td><td class="conf-col"><span class="conf conf-verified"><i></i>Verified in docs</span></td><td>No clean competitor equivalent found.</td></tr><tr><td class="sticky-col">Recording consent (two-party)</td><td class="ncc-col">Campaign &gt; Recordings: Apply Consent On Two Party Regions, Disable Recording On Two Party Regions, Recording notification prompt / interval</td><td><span class="dash">&ndash;</span></td><td><span class="dash">&ndash;</span></td><td><span class="dash">&ndash;</span></td><td><span class="dash">&ndash;</span></td><td><span class="dash">&ndash;</span></td><td class="conf-col"><span class="conf conf-verified"><i></i>Verified in docs</span></td><td>Competitor equivalents not retrieved.</td></tr><tr><td class="sticky-col">Recording config</td><td class="ncc-col">Campaign &gt; Recordings: Recording percentage, File Server, Filename Format</td><td><span class="dash">&ndash;</span></td><td><span class="dash">&ndash;</span></td><td><span class="dash">&ndash;</span></td><td>Outbound call recording settings</td><td><span class="dash">&ndash;</span></td><td class="conf-col"><span class="conf conf-partial"><i></i>Partly verified</span></td><td></td></tr><tr><td class="sticky-col">DNC / consent</td><td class="ncc-col">Blocked Numbers, Temporary DNC, Consent; User Profile &gt; Outbound: Allow override</td><td><span class="dash">&ndash;</span></td><td>DNC lists (custom DNC source)</td><td>Skill DNC settings</td><td>Campaign compliance tools</td><td><span class="dash">&ndash;</span></td><td class="conf-col"><span class="conf conf-partial"><i></i>Partly verified</span></td><td>NCC Allow override lets agent proceed after consent warning.</td></tr><tr><td class="sticky-col">SMS pacing</td><td class="ncc-col">Campaign &gt; SMS Actions: Messages per Minute, Template, From, Success/Failed Function</td><td><span class="dash">&ndash;</span></td><td><span class="dash">&ndash;</span></td><td><span class="dash">&ndash;</span></td><td><span class="dash">&ndash;</span></td><td><span class="dash">&ndash;</span></td><td class="conf-col"><span class="conf conf-verified"><i></i>Verified in docs</span></td><td></td></tr><tr><td class="sticky-col">Sensitive data redaction</td><td class="ncc-col">Campaign &gt; Data Loss Prevention: Redaction Type, Redaction Likelihood (credit card, email, IBAN, phone, SWIFT)</td><td><span class="dash">&ndash;</span></td><td><span class="dash">&ndash;</span></td><td><span class="dash">&ndash;</span></td><td><span class="dash">&ndash;</span></td><td><span class="dash">&ndash;</span></td><td class="conf-col"><span class="conf conf-verified"><i></i>Verified in docs</span></td><td>Competitor equivalents not retrieved.</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="tab-panel" id="panel-Other-Vendors" role="tabpanel" aria-labelledby="tab-Other-Vendors">
+      <div class="panel-head">
+        <h2>Other Vendors</h2>
+        <p class="tab-note">Talkdesk, Avaya, Sinch and similar field names mapped to NCC.</p>
+        <div class="search-row">
+          <input type="search" class="search-box" placeholder="Filter Other Vendors&hellip;" data-target="table-Other-Vendors" aria-label="Filter Other Vendors table">
+          <span class="row-count" id="count-Other-Vendors"></span>
+        </div>
+      </div>
+      <div class="table-scroll">
+        <table id="table-Other-Vendors">
+          <thead><tr><th>Setting</th><th>Vendor field</th><th>Closest NCC equivalent</th><th>Confidence</th></tr></thead>
+          <tbody><tr><td class="sticky-col">Skill selection method</td><td>Avaya: Skill Type (EadLoa, EadMia, UcdLoa, UcdMia)</td><td class="ncc-col">Queue &gt; Agent Assignment + Skills</td><td class="conf-col"><span class="conf conf-verified"><i></i>Verified in docs</span></td></tr><tr><td class="sticky-col">Service level</td><td>Avaya: Service Level Target (% in sec)</td><td class="ncc-col">Queue &gt; SLA tab</td><td class="conf-col"><span class="conf conf-verified"><i></i>Verified in docs</span></td></tr><tr><td class="sticky-col">Time warning threshold</td><td>Avaya: Time Warning Threshold (oldest call in queue)</td><td class="ncc-col">No direct field; use Queue Dashboard thresholds <span class="unverified">(unverified)</span></td><td class="conf-col"><span class="conf conf-partial"><i></i>Partly verified</span></td></tr><tr><td class="sticky-col">Forced wrap-up code</td><td>Avaya: Forced Entry of Call Work Codes</td><td class="ncc-col">User Profile &gt; Auto Disposition &gt; Disable Disposition / Confirm disposition</td><td class="conf-col"><span class="conf conf-partial"><i></i>Partly verified</span></td></tr><tr><td class="sticky-col">ACW timer</td><td>Avaya: auto-in work interval after call drops</td><td class="ncc-col">User Profile &gt; Auto Disposition &gt; Wait time before auto disposition</td><td class="conf-col"><span class="conf conf-partial"><i></i>Partly verified</span></td></tr><tr><td class="sticky-col">Abandon ratio</td><td>Sinch: Abandoned Ratio (%), Abandon Timeout (s)</td><td class="ncc-col">Campaign &gt; Dialer Configuration &gt; Abandon Percentage</td><td class="conf-col"><span class="conf conf-verified"><i></i>Verified in docs</span></td></tr><tr><td class="sticky-col">Pacing aggressiveness</td><td>Sinch: Increase Ratio (%)</td><td class="ncc-col">Campaign &gt; Dialer Configuration &gt; Max Dial Ratio</td><td class="conf-col"><span class="conf conf-verified"><i></i>Verified in docs</span></td></tr><tr><td class="sticky-col">Max dialing ratio</td><td>Talkdesk: Max. dialing ratio</td><td class="ncc-col">Max Dial Ratio</td><td class="conf-col"><span class="conf conf-verified"><i></i>Verified in docs</span></td></tr><tr><td class="sticky-col">Abandon rate / timeout</td><td>Talkdesk: Max. abandonment rate, Abandonment timeout</td><td class="ncc-col">Abandon Percentage</td><td class="conf-col"><span class="conf conf-verified"><i></i>Verified in docs</span></td></tr><tr><td class="sticky-col">Ring time</td><td>Talkdesk: Max. ring time</td><td class="ncc-col">No Answer Timeout</td><td class="conf-col"><span class="conf conf-verified"><i></i>Verified in docs</span></td></tr><tr><td class="sticky-col">Attempts / retry</td><td>Talkdesk: Global max attempts, default retry period, max busy attempts per record</td><td class="ncc-col">Lead Attempts tab</td><td class="conf-col"><span class="conf conf-verified"><i></i>Verified in docs</span></td></tr><tr><td class="sticky-col">Campaign priority</td><td>Talkdesk: campaign priority when agents are shared</td><td class="ncc-col">No direct field found</td><td class="conf-col"><span class="conf conf-partial"><i></i>Partly verified</span></td></tr></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="tab-panel" id="panel-NCC-Field-Reference" role="tabpanel" aria-labelledby="tab-NCC-Field-Reference">
+      <div class="panel-head">
+        <h2>NCC Field Reference</h2>
+        <p class="tab-note">NCC queue, campaign and user profile fields as published in the NCC knowledge base.</p>
+        <div class="search-row">
+          <input type="search" class="search-box" placeholder="Filter NCC Field Reference&hellip;" data-target="table-NCC-Field-Reference" aria-label="Filter NCC Field Reference table">
+          <span class="row-count" id="count-NCC-Field-Reference"></span>
+        </div>
+      </div>
+      <div class="table-scroll">
+        <table id="table-NCC-Field-Reference">
+          <thead><tr><th>NCC Object</th><th>Tab</th><th>Field(s)</th><th>Notes</th></tr></thead>
+          <tbody><tr><td class="sticky-col">Queue</td><td>Information</td><td>Name</td><td>Queue name</td></tr><tr><td class="sticky-col">Queue</td><td>Information</td><td>Description</td><td>Queue description</td></tr><tr><td class="sticky-col">Queue</td><td>Information</td><td>Enable No Answer as Available</td><td>No Answer status auto-switches to available; also when agents miss workitems</td></tr><tr><td class="sticky-col">Queue</td><td>Information</td><td>Agent to Call Ratio</td><td>Calls allowed in queue scale with agent count</td></tr><tr><td class="sticky-col">Queue</td><td>Real Time</td><td>Enable Realtime Changes</td><td>User assignment applies dynamically instead of at login</td></tr><tr><td class="sticky-col">Queue</td><td>Real Time</td><td>Enable Realtime Data</td><td>Sends queue data (EWT, position) to workflow in real time</td></tr><tr><td class="sticky-col">Queue</td><td>Company Directory</td><td>Hide In Company Directory</td><td>Hides queue from directory</td></tr><tr><td class="sticky-col">Queue</td><td>Agent Assignment</td><td>FIFO / LIFO x Across All Queues, By Status, Per Queue</td><td>Six agent selection types</td></tr><tr><td class="sticky-col">Queue</td><td>Play Announcement</td><td>Prompt</td><td>Announcement played to agent on offer</td></tr><tr><td class="sticky-col">Queue</td><td>SLA</td><td>SLA threshold per channel (Voice, Chat, Email, Social, SMS)</td><td>Target seconds</td></tr><tr><td class="sticky-col">Queue</td><td>SLA</td><td>SLA 1 / SLA 2 / SLA 3</td><td>Three service level formulas</td></tr><tr><td class="sticky-col">Queue</td><td>Blended Queue</td><td>Blended</td><td>Queue spans campaigns; use 1:1 with predictive campaign</td></tr><tr><td class="sticky-col">Queue</td><td>Email Working Hours</td><td>Business Event</td><td>Hours used for email queue time and SLA</td></tr><tr><td class="sticky-col">Queue</td><td>Users / Supervisors</td><td>Members</td><td>Agents and supervisors assigned</td></tr><tr><td class="sticky-col">Campaign</td><td>Information</td><td>Identifier, Name, Description</td><td>Mandatory for all campaigns</td></tr><tr><td class="sticky-col">Campaign</td><td>General Configuration</td><td>Campaign Goals, Music URL, Music Library</td><td>Daily workitem goal; default hold music</td></tr><tr><td class="sticky-col">Campaign</td><td>Surveys</td><td>User Survey, Quality Monitoring Survey, Customer Survey</td><td>Survey associations</td></tr><tr><td class="sticky-col">Campaign</td><td>Options</td><td>Use For Extension / Outbound / Progressive Dialing, Fax, SMS, Email; Default for Outbound / Extension Dialing</td><td>Campaign type toggles</td></tr><tr><td class="sticky-col">Campaign</td><td>Campaign Call ID</td><td>Number, State DID, Outbound ANI, Disable Dialing Leads With Campaign Call ID</td><td>Outbound caller ID</td></tr><tr><td class="sticky-col">Campaign</td><td>Campaign Auto Disposition</td><td>Wait Time before Auto Disposition, Auto Disposition</td><td>Per-campaign auto disposition</td></tr><tr><td class="sticky-col">Campaign</td><td>Chat Options</td><td>Keep Alive, Mobile Keep Alive</td><td>Seconds chat workitem stays open</td></tr><tr><td class="sticky-col">Campaign</td><td>Human</td><td>Human Action, Human Function, Human Disposition</td><td>Dialer behavior when human reached</td></tr><tr><td class="sticky-col">Campaign</td><td>Auto Dial with Timer</td><td>Enable Auto Dial Timer, Auto Dial Timer (1-600s)</td><td>Progressive timer</td></tr><tr><td class="sticky-col">Campaign</td><td>Dialer Configuration</td><td>Quarterback Mode, Group, Max Dial Ratio, Agents Available for Inbound, Field Mappings, Abandon Percentage, No Answer Timeout, REST API, Cooling Off Period</td><td>Core dialer pacing</td></tr><tr><td class="sticky-col">Campaign</td><td>Answering Machine Detection</td><td>AMD Timeout, End Speech Threshold, AMD Unknown as Answering Machine, Initial Silence Timeout, Speech Threshold</td><td>AMD tuning (ms)</td></tr><tr><td class="sticky-col">Campaign</td><td>Lead Options</td><td>Min/Max leads in memory, % Agent/Third Party/New/All Callbacks, Time Between Alternate Phone Numbers, Primary Phone Field, Load all new and callback leads</td><td>Lead loading and mix</td></tr><tr><td class="sticky-col">Campaign</td><td>Lead Attempts</td><td>Max Attempts per Address, Daily Max Attempts, Max Attempts, Delay For, Max Daily Attempts for Outbound Calls</td><td>Attempt limits</td></tr><tr><td class="sticky-col">Campaign</td><td>Lead Filters</td><td>Filter, Field used to Prioritize Leads, Filter Leads by Number of Days, Partition Count Field</td><td>Lead selection</td></tr><tr><td class="sticky-col">Campaign</td><td>Third / First Party Skills</td><td>Field used, No Third Party Agent Available Callback (min), Minimum Available users, Queue for Third Party Skills, Only Load Leads for Available Third Party Users</td><td>Skill-matched dialing</td></tr><tr><td class="sticky-col">Campaign</td><td>SMS Actions</td><td>Success Function, Template, From, Failed Function, Messages per Minute</td><td>SMS campaign sending</td></tr><tr><td class="sticky-col">Campaign</td><td>Services</td><td>Conversation Insights, Knowledge Base (Shelf AI), Real Time Analysis, Summary</td><td>AI services</td></tr><tr><td class="sticky-col">Campaign</td><td>Recordings</td><td>Recording percentage, File Server, Filename Format, Apply/Disable Recording On Two Party Regions, Notification prompt/interval</td><td>Recording and consent</td></tr><tr><td class="sticky-col">Campaign</td><td>Transcription</td><td>Start/End Time, Min/Max Duration, Percentage of max minutes, Languages, Only Transcribe When Call Is Recorded</td><td>Transcription rules</td></tr><tr><td class="sticky-col">Campaign</td><td>Data Loss Prevention</td><td>Information Type, Redaction Type, Redaction Likelihood</td><td>PII redaction</td></tr><tr><td class="sticky-col">Campaign</td><td>Screen Recording</td><td>Type (Nextiva native or Calabrio)</td><td>Screen recording</td></tr><tr><td class="sticky-col">Campaign</td><td>Spoof ANI</td><td>Spoof ANI on Agent Transfer</td><td>Send caller number on transfer</td></tr><tr><td class="sticky-col">Campaign</td><td>Workflow / Automated Jobs</td><td>Workflow; Job Trigger, Job Workflow Function, Outbound Function</td><td>Flow and scheduled jobs</td></tr><tr><td class="sticky-col">Campaign</td><td>Quality Monitoring Recordings</td><td>Enable, File Server, Filename Format</td><td>QM recordings</td></tr><tr><td class="sticky-col">User Profile</td><td>Information</td><td>Name, Description, Authority Set Identifier</td><td>Profile identity and permissions</td></tr><tr><td class="sticky-col">User Profile</td><td>Options</td><td>Welcome Prompt, Password Rule, Show Web RTC Notification, Ring Phone on ACD Offer, Ring Logged Out Agent&#x27;s Phone, Enable screen recording, Dual View, Enable Changing View</td><td>Agent experience</td></tr><tr><td class="sticky-col">User Profile</td><td>Transcription</td><td>Enable Realtime Transcription, Percentage of max minutes</td><td>Transcription</td></tr><tr><td class="sticky-col">User Profile</td><td>Auto Disposition</td><td>Disable Disposition, Auto disposition, Wait time before auto disposition, Confirm disposition</td><td>Wrap-up behavior</td></tr><tr><td class="sticky-col">User Profile</td><td>ACD</td><td>Auto Login to Queues, Offer Timeout in Seconds</td><td>ACD behavior</td></tr><tr><td class="sticky-col">User Profile</td><td>Outbound</td><td>Allow campaign selection, Allow override, Prevent Manual Outbound on ACD Offer</td><td>Outbound permissions</td></tr><tr><td class="sticky-col">User Profile</td><td>Auto Dial</td><td>Auto Dial in Review</td><td>Progressive auto-dial</td></tr><tr><td class="sticky-col">User Profile</td><td>Edge Option</td><td>Twilio Edge ID, Region</td><td>SIP edge routing</td></tr><tr><td class="sticky-col">User Profile</td><td>Channels</td><td>Enable, Priority, Simultaneous Limit, Support Multi-tasking (Chat, Email, Fax, SMS, Social, Voice)</td><td>Channel capacity</td></tr><tr><td class="sticky-col">User Profile</td><td>Call Notifications</td><td>Call Failed / Permission / Unavailable / Network / Busy / Complete / No Answer; Connect and Ringing notifications</td><td>Agent notifications</td></tr><tr><td class="sticky-col">User Profile</td><td>Teams Presence Sync</td><td>Sync Presence to Teams / to Nextiva</td><td>Status names must match</td></tr><tr><td class="sticky-col">User Profile</td><td>Auto Login</td><td>Auto Login type (Predictive/Progressive), by Campaign or Group</td><td>Auto login to dialer</td></tr><tr><td class="sticky-col">Skill</td><td>Information</td><td>Name, Description (multilingual)</td><td>Skill identity</td></tr><tr><td class="sticky-col">Skill</td><td>Users</td><td>Assigned users</td><td>Skill-based routing</td></tr><tr><td class="sticky-col">Skill</td><td>Third Party Skills</td><td>Minimum Available Users For Third-Party Skills</td><td>Dialer-to-nonDialer agent routing</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+
+<section class="tab-panel" id="panel-Sources" role="tabpanel" aria-labelledby="tab-Sources">
+  <div class="panel-head">
+    <h2>Sources</h2>
+    <p class="tab-note">Documentation referenced when building this mapping.</p>
+  </div>
+  <div class="table-scroll">
+    <table id="table-Sources">
+      <thead><tr><th>Source</th><th>URL</th></tr></thead>
+      <tbody><tr><td>NCC Queues</td><td class="src-url"><a href="https://help.nextiva.com/article/nextiva-contact-center-queues" target="_blank" rel="noopener">https://help.nextiva.com/article/nextiva-contact-center-queues</a></td></tr><tr><td>NCC Campaigns</td><td class="src-url"><a href="https://help.nextiva.com/article/nextiva-contact-center-campaigns" target="_blank" rel="noopener">https://help.nextiva.com/article/nextiva-contact-center-campaigns</a></td></tr><tr><td>NCC User Profiles</td><td class="src-url"><a href="https://help.nextiva.com/article/nextiva-contact-center-user-profiles" target="_blank" rel="noopener">https://help.nextiva.com/article/nextiva-contact-center-user-profiles</a></td></tr><tr><td>NCC Skills</td><td class="src-url"><a href="https://help.nextiva.com/article/nextiva-contact-center-skills" target="_blank" rel="noopener">https://help.nextiva.com/article/nextiva-contact-center-skills</a></td></tr><tr><td>Five9 Campaign Admin Guide (PDF)</td><td class="src-url"><a href="https://documentation-be.five9.com/bundle/campaign-administrators-guide/raw/resource/enus/campaign-administrators-guide.pdf?save_local=true" target="_blank" rel="noopener">https://documentation-be.five9.com/bundle/campaign-administrators-guide/raw/resource/enus/campaign-administrators-guide.pdf?save_local=true</a></td></tr><tr><td>Five9 admin API wrapper (fields)</td><td class="src-url"><a href="https://www.powershellgallery.com/packages/PSFive9Admin/1.0.84/Content/Public%5CCampaigns%5CNew-Five9OutboundCampaign.ps1" target="_blank" rel="noopener">https://www.powershellgallery.com/packages/PSFive9Admin/1.0.84/Content/Public%5CCampaigns%5CNew-Five9OutboundCampaign.ps1</a></td></tr><tr><td>Genesys Cloud campaign properties</td><td class="src-url"><a href="https://help.genesys.cloud/articles/campaign-properties-dialing-mode/" target="_blank" rel="noopener">https://help.genesys.cloud/articles/campaign-properties-dialing-mode/</a></td></tr><tr><td>Genesys Cloud queue / routing</td><td class="src-url"><a href="https://help.genesys.cloud/213362/" target="_blank" rel="noopener">https://help.genesys.cloud/213362/</a></td></tr><tr><td>NICE CXone Manage Skills</td><td class="src-url"><a href="https://help.nicecxone.com/content/acd/channels/additionalchannelfeatures/skills/manageskills.htm" target="_blank" rel="noopener">https://help.nicecxone.com/content/acd/channels/additionalchannelfeatures/skills/manageskills.htm</a></td></tr><tr><td>NICE CXone Hours of Operation</td><td class="src-url"><a href="https://help.nicecxone.com/content/acd/hoursofoperation/hoursofoperation.htm" target="_blank" rel="noopener">https://help.nicecxone.com/content/acd/hoursofoperation/hoursofoperation.htm</a></td></tr><tr><td>NICE CXone Customize Voice (dispositions)</td><td class="src-url"><a href="https://help.nicecxone.com/Content/acd/channels/voice/customizevoice.htm" target="_blank" rel="noopener">https://help.nicecxone.com/Content/acd/channels/voice/customizevoice.htm</a></td></tr><tr><td>RingCX outbound routing (object list)</td><td class="src-url"><a href="https://partnersupport.ringcentral.com/ringcx/admins/outbound-routing.html" target="_blank" rel="noopener">https://partnersupport.ringcentral.com/ringcx/admins/outbound-routing.html</a></td></tr><tr><td>Zoom CC Queues and Skills</td><td class="src-url"><a href="https://library.zoom.com/business-services/zoom-contact-center/zoom-customer-experience/zoom-contact-center-components/queues" target="_blank" rel="noopener">https://library.zoom.com/business-services/zoom-contact-center/zoom-customer-experience/zoom-contact-center-components/queues</a></td></tr><tr><td>Zoom CC queue API fields</td><td class="src-url"><a href="https://www.withone.ai/knowledge/zoom/conn_mod_def%3A%3AGJ8esvmMvPU%3A%3AUzQfNdbaTe6-7Ox9HqwJOQ" target="_blank" rel="noopener">https://www.withone.ai/knowledge/zoom/conn_mod_def%3A%3AGJ8esvmMvPU%3A%3AUzQfNdbaTe6-7Ox9HqwJOQ</a></td></tr><tr><td>Talkdesk Dialer campaign</td><td class="src-url"><a href="https://support.talkdesk.com/hc/en-us/articles/360044100192" target="_blank" rel="noopener">https://support.talkdesk.com/hc/en-us/articles/360044100192</a></td></tr><tr><td>Avaya skill fields</td><td class="src-url"><a href="https://documentation.avaya.com/en-us/home/bundle/highcapacitycontactcenter/AdministeringAvayaOneCloudCCaaSforLargeEnterprise_r100/agent-configuration/skills_overview/skills_fields.html" target="_blank" rel="noopener">https://documentation.avaya.com/en-us/home/bundle/highcapacitycontactcenter/AdministeringAvayaOneCloudCCaaSforLargeEnterprise_r100/agent-configuration/skills_overview/skills_fields.html</a></td></tr><tr><td>Sinch predictive settings</td><td class="src-url"><a href="https://docs.cc.sinch.com/cloud/system-configurator/en/oxy_ex-1/common/cio1615834134197.html" target="_blank" rel="noopener">https://docs.cc.sinch.com/cloud/system-configurator/en/oxy_ex-1/common/cio1615834134197.html</a></td></tr></tbody>
+    </table>
+  </div>
+</section>
+</main>
+
+<footer class="site-footer">
+  Internal reference &mdash; confirm &ldquo;Partly verified&rdquo; and unverified fields in the vendor admin UI before using in a customer-facing document. Prepared 2026-10-08.
+</footer>
+
+<script>
+(function(){
+  var tabButtons = document.querySelectorAll('nav.tabs button');
+  var panels = document.querySelectorAll('.tab-panel');
+
+  tabButtons.forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var target = btn.getAttribute('data-tab');
+      tabButtons.forEach(function(b){
+        b.classList.toggle('is-active', b === btn);
+        b.setAttribute('aria-selected', b === btn ? 'true' : 'false');
+      });
+      panels.forEach(function(p){
+        p.classList.toggle('is-active', p.id === 'panel-' + target);
+      });
+    });
+  });
+
+  function escapeRegExp(s){ return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+
+  function highlight(td, query){
+    var original = td.dataset.orig !== undefined ? td.dataset.orig : (td.dataset.orig = td.innerHTML);
+    if (!query){
+      td.innerHTML = original;
+      return;
+    }
+    var re = new RegExp('(' + escapeRegExp(query) + ')', 'ig');
+    // Only highlight within text nodes to avoid breaking existing tags; simple approach: wrap matches in plain-text clone
+    var tmp = document.createElement('div');
+    tmp.innerHTML = original;
+    (function walk(node){
+      for (var i = 0; i < node.childNodes.length; i++){
+        var child = node.childNodes[i];
+        if (child.nodeType === 3){
+          if (re.test(child.nodeValue)){
+            var span = document.createElement('span');
+            span.innerHTML = child.nodeValue.replace(re, '<mark>$1</mark>');
+            node.replaceChild(span, child);
+            i += span.childNodes.length - 1;
+          }
+        } else if (child.nodeType === 1 && child.tagName !== 'MARK') {
+          walk(child);
+        }
+      }
+    })(tmp);
+    td.innerHTML = tmp.innerHTML;
+  }
+
+  var searchBoxes = document.querySelectorAll('.search-box');
+  searchBoxes.forEach(function(box){
+    var tableId = box.getAttribute('data-target');
+    var table = document.getElementById(tableId);
+    if (!table) return;
+    var countEl = document.getElementById('count-' + tableId.replace('table-',''));
+    var rows = Array.prototype.slice.call(table.querySelectorAll('tbody tr'));
+    var totalRows = rows.length;
+
+    function updateCount(visible){
+      if (countEl) countEl.textContent = visible + ' / ' + totalRows + ' rows';
+    }
+    updateCount(totalRows);
+
+    box.addEventListener('input', function(){
+      var q = box.value.trim().toLowerCase();
+      var visible = 0;
+      rows.forEach(function(row){
+        var text = row.textContent.toLowerCase();
+        var match = !q || text.indexOf(q) !== -1;
+        row.style.display = match ? '' : 'none';
+        if (match) visible++;
+        Array.prototype.forEach.call(row.querySelectorAll('td'), function(td){
+          highlight(td, match ? q : '');
+        });
+      });
+      updateCount(visible);
+    });
+  });
+})();
+</script>
+
+</body>
+</html>
